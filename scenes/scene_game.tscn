@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cw4fg84c42tgk"]
+
+[ext_resource type="TileSet" uid="uid://rm4ho314ilf4" path="res://tiles/game_tile_set.tres" id="1_qqu3b"]
+[ext_resource type="Script" path="res://scripts/TileBoard.gd" id="2_seasn"]
+
+[node name="SceneGame" type="Node2D"]
+
+[node name="TileBoard" type="TileMap" parent="."]
+tile_set = ExtResource("1_qqu3b")
+cell_quadrant_size = 32
+format = 2
+layer_0/name = "BaseLayer"
+layer_1/name = "PieceLayer"
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 0
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("2_seasn")
