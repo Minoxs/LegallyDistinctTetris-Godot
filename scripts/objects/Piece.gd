@@ -19,5 +19,5 @@ func Rotate():
 	for i in len(self.cells):
 		var cell = self.cells[i]
 		res.cells[i].x = -cell.y
-		res.cells[i].y = -cell.x
+		res.cells[i].y = cell.x
 	return res
