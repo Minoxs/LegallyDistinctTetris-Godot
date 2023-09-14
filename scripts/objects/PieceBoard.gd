@@ -32,7 +32,7 @@ func CanPlaceCell(pos : Vector2i) -> bool:
 	return self.board[pos.y][pos.x].length_squared() == 0
 
 func CanPlace(pos : Vector2i, piece : Piece) -> bool:
-	for cell in piece.cells:
+	for cell in piece.Cells:
 		if !self.CanPlaceCell(pos + cell):
 			return false
 	return true
@@ -41,9 +41,9 @@ func Place(pos : Vector2i, piece : Piece) -> bool:
 	if !self.CanPlace(pos, piece):
 		return false
 	
-	for cell in piece.cells:
+	for cell in piece.Cells:
 		var p = pos + cell
-		self.board[p.y][p.x] = piece.id
+		self.board[p.y][p.x] = piece.Value
 	
 	return true
 

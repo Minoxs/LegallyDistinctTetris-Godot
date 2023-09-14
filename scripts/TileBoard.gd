@@ -21,7 +21,7 @@ var PIECE_CUR : Piece = null
 
 func PieceFromPattern(pattern : TileMapPattern) -> Piece:
 	var cells = pattern.get_used_cells()
-	return Piece.new(pattern.get_cell_atlas_coords(cells[0]), cells)
+	return Piece.new().Init(pattern.get_cell_atlas_coords(cells[0]), cells)
 
 func GenerateNewPiece() -> bool:
 	var dice  = randi_range(0, self.tile_set.get_patterns_count() - 1)
@@ -77,8 +77,8 @@ func tick(delta):
 func render(fast : bool = false):
 	# Render current piece in layer 1
 	self.clear_layer(1)
-	for cell in PIECE_CUR.cells:
-		self.set_cell(1, cell + PIECE_POS, 0, PIECE_CUR.id)
+	for cell in PIECE_CUR.Cells:
+		self.set_cell(1, cell + PIECE_POS, 0, PIECE_CUR.Value)
 	
 	if fast: return
 	
