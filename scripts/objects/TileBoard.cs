@@ -80,10 +80,9 @@ public partial class TileBoard : TileMap {
         if (!GenerateNewPiece()) GameOver();
     }
 
-    private void Render(bool fast = false) {
+    private void Render() {
         ClearLayer(1);
         foreach (var cell in PIECE_CUR.Cells) SetCell(1, cell + PIECE_POS, 0, PIECE_CUR.Value);
-        if (fast) return;
 
         ClearLayer(0);
         for (var y = 0; y < REAL_BOARD.height; y++)
@@ -94,12 +93,11 @@ public partial class TileBoard : TileMap {
         }
     }
 
-    public override void _Input(InputEvent @event) {
-        if (Input.IsActionPressed("ui_up")) RotatePiece();
-        if (Input.IsActionPressed("ui_right")) MovePiece(Vector2I.Right);
-        if (Input.IsActionPressed("ui_left")) MovePiece(Vector2I.Left);
+    private void ProcessInput() {
+        if (Input.IsActionJustPressed("ui_up")) RotatePiece();
+        if (Input.IsActionJustPressed("ui_right")) MovePiece(Vector2I.Right);
+        if (Input.IsActionJustPressed("ui_left")) MovePiece(Vector2I.Left);
         if (Input.IsActionPressed("ui_down")) Tick(Math.Max(TICK_RATE - TICK_STEP, 0));
-        Render(true);
     }
 
     public override void _Ready() {
@@ -113,6 +111,7 @@ public partial class TileBoard : TileMap {
         window.X = (window.X - X_SIZE * SQUARE_UNIT * Scale.X) / 2;
         window.Y -= (Y_SIZE + 1) * SQUARE_UNIT * Scale.Y;
         Position = window;
+        ProcessInput();
         Tick(delta);
         Render();
     }
