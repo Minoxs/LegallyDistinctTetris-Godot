@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Tetris"
+config/name="Legally Distinct Tetris"
 run/main_scene="res://scenes/scene_game.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
