@@ -8,6 +8,7 @@ public partial class TileBoard : TileMap {
     private static readonly Vector2I PIECE_WHITE = Vector2I.Zero;
     private static readonly Vector2I PIECE_BLACK = Vector2I.Right;
     private static readonly double TICK_RATE = 0.25f;
+    private int FLOOR_TICKS;
     private Piece PIECE_CUR;
     private Vector2I PIECE_POS = Vector2I.Zero;
     private PieceBoard REAL_BOARD;
@@ -70,10 +71,11 @@ public partial class TileBoard : TileMap {
 
     private void Tick(double delta) {
         TICK_STEP += delta;
-        if (!(TICK_STEP >= TICK_RATE)) return;
+        if (TICK_STEP < TICK_RATE) return;
         TICK_STEP -= TICK_RATE;
 
-        if (MovePiece(Vector2I.Down)) return;
+        if (MovePiece(Vector2I.Down) || FLOOR_TICKS++ < 3) return;
+        FLOOR_TICKS = 0;
 
         REAL_BOARD.Place(PIECE_POS, PIECE_CUR);
         BreakBlocks();
