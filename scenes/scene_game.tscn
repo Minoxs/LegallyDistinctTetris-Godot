@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cw4fg84c42tgk"]
 
 [ext_resource type="TileSet" uid="uid://rm4ho314ilf4" path="res://tiles/game_tile_set.tres" id="1_qqu3b"]
-[ext_resource type="Script" path="res://scripts/TileBoard.gd" id="2_seasn"]
+[ext_resource type="Script" path="res://scripts/objects/TileBoard.cs" id="2_4g3ao"]
 
 [node name="SceneGame" type="Node2D"]
 
@@ -24,4 +24,4 @@ layer_2/y_sort_enabled = false
 layer_2/y_sort_origin = 0
 layer_2/z_index = 0
 layer_2/tile_data = PackedInt32Array()
-script = ExtResource("2_seasn")
+script = ExtResource("2_4g3ao")

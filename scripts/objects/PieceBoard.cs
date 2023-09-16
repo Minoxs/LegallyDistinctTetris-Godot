@@ -6,13 +6,13 @@ using Godot.Collections;
 
 namespace Tetris.scripts.objects;
 
-[GlobalClass]
 public partial class PieceBoard : RefCounted {
+    // TODO CREATE/USE AN ACTUAL MATRIX TYPE
     public Array<Array<Vector2I>> board;
     public int height;
     public int width;
 
-    public PieceBoard Init(Vector2I size) {
+    public PieceBoard(Vector2I size) {
         width = size.X;
         height = size.Y;
         board = new Array<Array<Vector2I>>();
@@ -21,8 +21,6 @@ public partial class PieceBoard : RefCounted {
             for (var x = 0; x < width; x++) line.Add(Vector2I.Zero);
             board.Add(line);
         }
-
-        return this;
     }
 
     public override string ToString() {
@@ -35,7 +33,7 @@ public partial class PieceBoard : RefCounted {
         );
     }
 
-    private static bool IsEmptyCell(Vector2I cell) {
+    public static bool IsEmptyCell(Vector2I cell) {
         return cell.LengthSquared() == 0;
     }
 

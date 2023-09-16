@@ -3,19 +3,24 @@ using Godot.Collections;
 
 namespace Tetris.scripts.objects;
 
-[GlobalClass]
+// TODO CONVERT PIECE TO RECORD PROBABLY
+// TODO USE C# ARRAY WHEREVER POSSIBLE
 public partial class Piece : RefCounted {
     public Array<Vector2I> Cells;
     public Vector2I Value;
 
-    public Piece Init(Vector2I value, Array<Vector2I> cells) {
+    public Piece(Vector2I value, Array<Vector2I> cells) {
         Value = value;
         Cells = cells.Duplicate();
-        return this;
+    }
+
+    public Piece(TileMapPattern pattern) {
+        Cells = pattern.GetUsedCells();
+        Value = pattern.GetCellAtlasCoords(Cells[0]);
     }
 
     public Piece Duplicate() {
-        return new Piece().Init(Value, Cells);
+        return new Piece(Value, Cells);
     }
 
     public override string ToString() {
