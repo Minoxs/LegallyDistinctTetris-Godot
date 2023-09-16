@@ -55,7 +55,7 @@ func createBoard(x_size : int, y_size : int):
 	Y_SIZE = y_size
 	SPAWN  = Vector2(floor(X_SIZE / 2), 0)
 	
-	REAL_BOARD = PieceBoard.new(Vector2i(X_SIZE, Y_SIZE))
+	REAL_BOARD = PieceBoard.new().Init(Vector2i(X_SIZE, Y_SIZE))
 	GenerateNewPiece()
 	
 	for y in range(Y_SIZE):

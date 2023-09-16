@@ -5,8 +5,8 @@ namespace Tetris.scripts.objects;
 
 [GlobalClass]
 public partial class Piece : RefCounted {
-    public Vector2I Value;
     public Array<Vector2I> Cells;
+    public Vector2I Value;
 
     public Piece Init(Vector2I value, Array<Vector2I> cells) {
         Value = value;
@@ -30,6 +30,7 @@ public partial class Piece : RefCounted {
             aux.Y = +Cells[i].X;
             p.Cells[i] = aux;
         }
+
         return p;
     }
 }
