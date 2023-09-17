@@ -1,8 +1,8 @@
 ﻿using System;
 using Godot;
-using Tetris.scripts.interfaces;
+using LegallyDistinctTetris.scripts.interfaces;
 
-namespace Tetris.scripts.board;
+namespace LegallyDistinctTetris.scripts.board;
 
 [GlobalClass]
 public partial class TileBoard : TileMap, ICenterable {

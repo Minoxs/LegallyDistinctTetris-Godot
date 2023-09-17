@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-namespace Tetris.scripts.board;
+namespace LegallyDistinctTetris.scripts.board;
 
 public class Piece {
     public readonly Vector2I Value;

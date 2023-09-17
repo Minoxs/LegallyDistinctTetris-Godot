@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tetris", "Tetris.csproj", "{98EDF098-2E19-4229-9AFB-3221A9816D1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegallyDistinctTetris", "LegallyDistinctTetris.csproj", "{98EDF098-2E19-4229-9AFB-3221A9816D1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

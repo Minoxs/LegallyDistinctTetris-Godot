@@ -1,7 +1,7 @@
 using Godot;
-using Tetris.scripts.interfaces;
+using LegallyDistinctTetris.scripts.interfaces;
 
-namespace Tetris.scripts;
+namespace LegallyDistinctTetris.scripts;
 
 public partial class CameraFollowCenter : Camera2D {
     [Export]
