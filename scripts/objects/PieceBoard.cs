@@ -6,7 +6,8 @@ using Godot.Collections;
 
 namespace Tetris.scripts.objects;
 
-public partial class PieceBoard : RefCounted {
+// TODO CREATE SOME FORM OF FOREACH CELL
+public class PieceBoard {
     // TODO CREATE/USE AN ACTUAL MATRIX TYPE
     public Array<Array<Vector2I>> Board;
 
