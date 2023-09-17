@@ -3,27 +3,11 @@ using Godot;
 
 namespace Tetris.scripts.objects;
 
+[GlobalClass]
 public partial class TileBoard : TileMap {
     // Black piece used in the background layer
-    private readonly static Vector2I PieceBlack = Vector2I.Right;
-
-    // Current piece being moved
-    private Piece _pieceCur;
-
-    // Underlying game board
-    private PieceBoard _realBoard;
-
-    // Current score
-    private int _score;
-
-    // Piece spawn locatiom
-    private Vector2I _spawn = Vector2I.Zero;
-
-    // Cell size
-    private int _squareUnit;
-
-    // How far along a tick game is currently
-    private double _tickStep;
+    [Export]
+    public Vector2I BlackBlockAtlasCoord = Vector2I.Right;
 
     // How many ticks touching the floor before the piece is placed
     [Export(PropertyHint.Range, "0,10,1,or_greater")]
@@ -40,6 +24,21 @@ public partial class TileBoard : TileMap {
     // Amount of seconds for a single game tick
     [Export(PropertyHint.Range, "0,1,0.05,or_greater")]
     public double TickRate = 0.25f;
+
+    // Current piece being moved
+    private Piece _pieceCur;
+
+    // Underlying game board
+    private PieceBoard _realBoard;
+
+    // Current score
+    private int _score;
+
+    // Piece spawn location
+    private Vector2I _spawn = Vector2I.Zero;
+
+    // How far along a tick game is currently
+    private double _tickStep;
 
     private bool GenerateNewPiece() {
         var dice = GD.RandRange(0, TileSet.GetPatternsCount() - 1);
@@ -77,12 +76,21 @@ public partial class TileBoard : TileMap {
         _realBoard = new PieceBoard(Size);
         GenerateNewPiece();
 
+        // Enable required layers
+        Clear();
+        for (var layer = 0; layer < 3; layer++) SetLayerEnabled(layer, true);
+
+        // Create walls
         for (var y = 0; y < Size.Y; y++) {
-            SetCell(2, new Vector2I(-1, y), 0, PieceBlack);
-            SetCell(2, new Vector2I(Size.X, y), 0, PieceBlack);
+            SetCell(0, new Vector2I(-1, y), 0, BlackBlockAtlasCoord);
+            SetCell(0, new Vector2I(Size.X, y), 0, BlackBlockAtlasCoord);
         }
 
-        for (var x = -1; x < Size.X + 1; x++) SetCell(2, new Vector2I(x, Size.Y), 0, PieceBlack);
+        // Create floor
+        for (var x = -1; x < Size.X + 1; x++) SetCell(0, new Vector2I(x, Size.Y), 0, BlackBlockAtlasCoord);
+
+        // Offset by one cell to start board in (0, 0)
+        Position += new Vector2(CellQuadrantSize, 0);
     }
 
     private void Tick(double delta) {
@@ -99,15 +107,15 @@ public partial class TileBoard : TileMap {
     }
 
     private void Render() {
-        ClearLayer(1);
-        foreach (var cell in _pieceCur.CellsPosition) SetCell(1, cell, 0, _pieceCur.Value);
+        ClearLayer(2);
+        foreach (var cell in _pieceCur.CellsPosition) SetCell(2, cell, 0, _pieceCur.Value);
 
-        ClearLayer(0);
+        ClearLayer(1);
         for (var y = 0; y < _realBoard.Height; y++)
         for (var x = 0; x < _realBoard.Width; x++) {
             var cell = _realBoard.Board[y][x];
             if (PieceBoard.IsEmptyCell(cell)) continue;
-            SetCell(0, new Vector2I(x, y), 0, cell);
+            SetCell(1, new Vector2I(x, y), 0, cell);
         }
     }
 
@@ -119,16 +127,11 @@ public partial class TileBoard : TileMap {
     }
 
     public override void _Ready() {
-        _squareUnit = CellQuadrantSize;
         CreateBoard();
         Render();
     }
 
     public override void _Process(double delta) {
-        var window = GetViewportRect().Size;
-        window.X = (window.X - Size.X * _squareUnit * Scale.X) / 2;
-        window.Y -= (Size.Y + 1) * _squareUnit * Scale.Y;
-        Position = window;
         ProcessInput();
         Tick(delta);
         Render();
