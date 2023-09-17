@@ -26,8 +26,10 @@ layer_2/y_sort_origin = 0
 layer_2/z_index = 0
 layer_2/tile_data = PackedInt32Array()
 script = ExtResource("2_wm5rr")
+TickRate = 1.0
 HeldPiece = NodePath("PieceBox")
 
-[node name="PieceBox" type="Node2D" parent="."]
-position = Vector2(-145, 17)
+[node name="PieceBox" type="TileMap" parent="."]
+position = Vector2(448, 64)
+format = 2
 script = ExtResource("3_uu1nk")
