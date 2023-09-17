@@ -5,7 +5,7 @@ namespace Tetris.scripts.objects;
 
 public partial class TileBoard : TileMap {
     // Black piece used in the background layer
-    private static readonly Vector2I PieceBlack = Vector2I.Right;
+    private readonly static Vector2I PieceBlack = Vector2I.Right;
 
     // Current piece being moved
     private Piece _pieceCur;
@@ -50,7 +50,7 @@ public partial class TileBoard : TileMap {
     }
 
     private void RotatePiece() {
-        var r = _pieceCur.Duplicate().Rotate();
+        var r = _pieceCur.Clone().Rotate();
         if (_realBoard.CanPlace(r)) _pieceCur = r;
     }
 

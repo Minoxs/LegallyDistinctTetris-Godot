@@ -1,45 +1,36 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
-using Godot.Collections;
 
 namespace Tetris.scripts.objects;
 
-// TODO CONVERT PIECE TO RECORD PROBABLY
-// TODO USE C# ARRAY WHEREVER POSSIBLE
-public record struct Piece {
+public class Piece {
     public readonly Vector2I Value;
 
     public IEnumerable<Vector2I> CellsPosition {
         get {
-            var cells = _cells.Duplicate();
-            for (var i = 0; i < cells.Count; i++) cells[i] += _position;
-
+            var cells = _cells.ToArray();
+            for (var i = 0; i < cells.Length; i++) cells[i] += _position;
             return cells;
         }
     }
 
-    private readonly Array<Vector2I> _cells;
+    private readonly Vector2I[] _cells;
     private Vector2I _position;
 
     private Piece(Piece piece) {
         Value = piece.Value;
-        _cells = piece._cells.Duplicate();
+        _cells = piece._cells.ToArray();
         _position = piece._position;
     }
 
-    public Piece(Vector2I value, Array<Vector2I> cells, Vector2I position) {
-        Value = value;
-        _cells = cells.Duplicate();
-        _position = position;
-    }
-
     public Piece(TileMapPattern pattern, Vector2I position) {
-        _cells = pattern.GetUsedCells();
+        _cells = pattern.GetUsedCells().ToArray();
         Value = pattern.GetCellAtlasCoords(_cells[0]);
         _position = position;
     }
 
-    public Piece Duplicate() {
+    public Piece Clone() {
         return new Piece(this);
     }
 
@@ -48,11 +39,10 @@ public record struct Piece {
     }
 
     public Piece Rotate() {
-        for (var i = 0; i < _cells.Count; i++) {
+        for (var i = 0; i < _cells.Length; i++) {
             var aux = _cells[i];
-            aux.X = -_cells[i].Y;
-            aux.Y = +_cells[i].X;
-            _cells[i] = aux;
+            _cells[i].X = -aux.Y;
+            _cells[i].Y = aux.X;
         }
 
         return this;
@@ -64,6 +54,6 @@ public record struct Piece {
     }
 
     public static Piece operator +(Piece piece, Vector2I offset) {
-        return piece.Duplicate().Offset(offset);
+        return piece.Clone().Offset(offset);
     }
 }
