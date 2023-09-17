@@ -1,10 +1,11 @@
 ﻿using System;
 using Godot;
+using Tetris.scripts.interfaces;
 
 namespace Tetris.scripts.board;
 
 [GlobalClass]
-public partial class TileBoard : TileMap {
+public partial class TileBoard : TileMap, ICenterable {
     // Black piece used in the background layer
     [Export]
     public Vector2I BlackBlockAtlasCoord = Vector2I.Right;
@@ -27,8 +28,8 @@ public partial class TileBoard : TileMap {
 
     // Size required to render board
     // 2 for walls + Board width
-    // 1 for floor + 4 above for spawn + Board heigth
-    public Vector2I CanvasSize => new Vector2I(2 + BoardSize.X, 1 + 4 + BoardSize.Y) * CellQuadrantSize;
+    // 1 for floor + Board heigth
+    public Vector2I CanvasSize => new Vector2I(2 + BoardSize.X, 1 + BoardSize.Y) * CellQuadrantSize;
 
     // Current piece being moved
     private Piece _pieceCur;
