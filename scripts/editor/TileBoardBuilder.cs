@@ -1,6 +1,7 @@
 using Godot;
+using LegallyDistinctTetris.scripts.board;
 
-namespace LegallyDistinctTetris.scripts.board;
+namespace LegallyDistinctTetris.scripts.editor;
 
 [Tool]
 [GlobalClass]
