@@ -1,11 +1,10 @@
 ﻿using System;
 using Godot;
-using LegallyDistinctTetris.scripts.interfaces;
 
 namespace LegallyDistinctTetris.scripts.board;
 
 [GlobalClass]
-public partial class TileBoard : TileMap, ICenterable {
+public partial class TileBoard : TileMap {
     // Black piece used in the background layer
     [Export]
     public Vector2I BlackBlockAtlasCoord = Vector2I.Right;
@@ -29,7 +28,7 @@ public partial class TileBoard : TileMap, ICenterable {
     // Size required to render board
     // 2 for walls + Board width
     // 1 for floor + Board heigth
-    public Vector2I CanvasSize => new Vector2I(2 + BoardSize.X, 1 + BoardSize.Y) * CellQuadrantSize;
+    public Vector2I CanvasSize => new Vector2I(2 + BoardSize.X, 1 + BoardSize.Y) * CellQuadrantSize * (Vector2I)Scale;
 
     // Current piece being moved
     private Piece _pieceCur;
@@ -95,8 +94,8 @@ public partial class TileBoard : TileMap, ICenterable {
         // Create floor
         for (var x = -1; x < BoardSize.X + 1; x++) SetCell(0, new Vector2I(x, BoardSize.Y), 0, BlackBlockAtlasCoord);
 
-        // Offset by one cell to start board in (0, 0)
-        Position += new Vector2(CellQuadrantSize, 0);
+        // Offset by one cell to start board in (0, 0), then move center point to (0, 0)
+        Position += new Vector2I(CellQuadrantSize, 0) - CanvasSize / 2;
     }
 
     private void Tick(double delta) {
