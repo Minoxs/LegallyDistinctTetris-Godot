@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using Godot.Collections;
 
-namespace Tetris.scripts.objects;
+namespace Tetris.scripts.board;
 
 // TODO CREATE SOME FORM OF FOREACH CELL
 public class PieceBoard {

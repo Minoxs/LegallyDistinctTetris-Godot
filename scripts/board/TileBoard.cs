@@ -1,7 +1,7 @@
-﻿using System
+﻿using System;
 using Godot;
 
-namespace Tetris.scripts.objects;
+namespace Tetris.scripts.board;
 
 [GlobalClass]
 public partial class TileBoard : TileMap {
