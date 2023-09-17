@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System
 using Godot;
 
 namespace Tetris.scripts.objects;
@@ -19,11 +19,16 @@ public partial class TileBoard : TileMap {
 
     // Size of the board
     [Export]
-    public Vector2I Size = new(10, 20);
+    public Vector2I BoardSize = new(10, 20);
 
     // Amount of seconds for a single game tick
     [Export(PropertyHint.Range, "0,1,0.05,or_greater")]
     public double TickRate = 0.25f;
+
+    // Size required to render board
+    // 2 for walls + Board width
+    // 1 for floor + 4 above for spawn + Board heigth
+    public Vector2I CanvasSize => new Vector2I(2 + BoardSize.X, 1 + 4 + BoardSize.Y) * CellQuadrantSize;
 
     // Current piece being moved
     private Piece _pieceCur;
@@ -72,8 +77,8 @@ public partial class TileBoard : TileMap {
     }
 
     private void CreateBoard() {
-        _spawn = new Vector2I(Size.X / 2, 0);
-        _realBoard = new PieceBoard(Size);
+        _spawn = new Vector2I(BoardSize.X / 2, 0);
+        _realBoard = new PieceBoard(BoardSize);
         GenerateNewPiece();
 
         // Enable required layers
@@ -81,13 +86,13 @@ public partial class TileBoard : TileMap {
         for (var layer = 0; layer < 3; layer++) SetLayerEnabled(layer, true);
 
         // Create walls
-        for (var y = 0; y < Size.Y; y++) {
+        for (var y = 0; y < BoardSize.Y; y++) {
             SetCell(0, new Vector2I(-1, y), 0, BlackBlockAtlasCoord);
-            SetCell(0, new Vector2I(Size.X, y), 0, BlackBlockAtlasCoord);
+            SetCell(0, new Vector2I(BoardSize.X, y), 0, BlackBlockAtlasCoord);
         }
 
         // Create floor
-        for (var x = -1; x < Size.X + 1; x++) SetCell(0, new Vector2I(x, Size.Y), 0, BlackBlockAtlasCoord);
+        for (var x = -1; x < BoardSize.X + 1; x++) SetCell(0, new Vector2I(x, BoardSize.Y), 0, BlackBlockAtlasCoord);
 
         // Offset by one cell to start board in (0, 0)
         Position += new Vector2(CellQuadrantSize, 0);
