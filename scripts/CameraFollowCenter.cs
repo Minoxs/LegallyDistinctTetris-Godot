@@ -3,7 +3,7 @@ using Tetris.scripts.interfaces;
 
 namespace Tetris.scripts;
 
-public partial class ScreenCenter : Node2D {
+public partial class CameraFollowCenter : Camera2D {
     [Export]
     public Node2D NodeToCenter;
 
@@ -16,11 +16,6 @@ public partial class ScreenCenter : Node2D {
 
     public override void _Process(double delta) {
         if (_nodeToCenter == null) return;
-
-        var window = GetViewportRect().Size;
-        NodeToCenter.Position = new Vector2(
-            (window.X - _nodeToCenter.CanvasSize.X) / 2,
-            window.Y - _nodeToCenter.CanvasSize.Y
-        );
+        Offset = _nodeToCenter.CanvasSize / 2;
     }
 }
