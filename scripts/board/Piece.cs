@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 namespace LegallyDistinctTetris.scripts.board;
 
+[Serializable]
 public class Piece {
     public readonly Vector2I Value;
 
@@ -45,6 +47,11 @@ public class Piece {
             _cells[i].Y = aux.X;
         }
 
+        return this;
+    }
+
+    public Piece ResetPosition() {
+        _position = Vector2I.Zero;
         return this;
     }
 

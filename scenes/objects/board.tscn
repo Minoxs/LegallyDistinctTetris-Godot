@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnd40ldkhla6i"]
+
+[ext_resource type="TileSet" uid="uid://rm4ho314ilf4" path="res://tiles/game_tile_set.tres" id="1_rw5ck"]
+[ext_resource type="Script" path="res://scripts/board/TileBoard.cs" id="2_wm5rr"]
+[ext_resource type="Script" path="res://scripts/board/PieceBox.cs" id="3_uu1nk"]
+
+[node name="board" type="TileMap"]
+position = Vector2(-160, -336)
+tile_set = ExtResource("1_rw5ck")
+cell_quadrant_size = 32
+format = 2
+layer_0/name = "Background"
+layer_0/tile_data = PackedInt32Array(65535, 65536, 0, 10, 65536, 0, 131071, 65536, 0, 65546, 65536, 0, 196607, 65536, 0, 131082, 65536, 0, 262143, 65536, 0, 196618, 65536, 0, 327679, 65536, 0, 262154, 65536, 0, 393215, 65536, 0, 327690, 65536, 0, 458751, 65536, 0, 393226, 65536, 0, 524287, 65536, 0, 458762, 65536, 0, 589823, 65536, 0, 524298, 65536, 0, 655359, 65536, 0, 589834, 65536, 0, 720895, 65536, 0, 655370, 65536, 0, 786431, 65536, 0, 720906, 65536, 0, 851967, 65536, 0, 786442, 65536, 0, 917503, 65536, 0, 851978, 65536, 0, 983039, 65536, 0, 917514, 65536, 0, 1048575, 65536, 0, 983050, 65536, 0, 1114111, 65536, 0, 1048586, 65536, 0, 1179647, 65536, 0, 1114122, 65536, 0, 1245183, 65536, 0, 1179658, 65536, 0, 1310719, 65536, 0, 1245194, 65536, 0, 1376255, 65536, 0, 1310720, 65536, 0, 1310721, 65536, 0, 1310722, 65536, 0, 1310723, 65536, 0, 1310724, 65536, 0, 1310725, 65536, 0, 1310726, 65536, 0, 1310727, 65536, 0, 1310728, 65536, 0, 1310729, 65536, 0, 1310730, 65536, 0)
+layer_1/name = "Pieces"
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 0
+layer_1/tile_data = PackedInt32Array()
+layer_2/name = "CurrentPiece"
+layer_2/enabled = true
+layer_2/modulate = Color(1, 1, 1, 1)
+layer_2/y_sort_enabled = false
+layer_2/y_sort_origin = 0
+layer_2/z_index = 0
+layer_2/tile_data = PackedInt32Array()
+script = ExtResource("2_wm5rr")
+
+[node name="PieceBox" type="Node2D" parent="."]
+position = Vector2(-129, 17)
+script = ExtResource("3_uu1nk")

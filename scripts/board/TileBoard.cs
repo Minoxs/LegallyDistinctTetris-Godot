@@ -5,10 +5,6 @@ namespace LegallyDistinctTetris.scripts.board;
 
 [GlobalClass]
 public partial class TileBoard : TileMap {
-    // Black piece used in the background layer
-    [Export]
-    public Vector2I BlackBlockAtlasCoord = Vector2I.Right;
-
     // How many ticks touching the floor before the piece is placed
     [Export(PropertyHint.Range, "0,10,1,or_greater")]
     public int FloorTicks = 3;
@@ -24,6 +20,10 @@ public partial class TileBoard : TileMap {
     // Amount of seconds for a single game tick
     [Export(PropertyHint.Range, "0,1,0.05,or_greater")]
     public double TickRate = 0.25f;
+
+    // Piece being held
+    [Export]
+    public PieceBox HeldPiece;
 
     // Size required to render board
     // 2 for walls + Board width
@@ -53,6 +53,11 @@ public partial class TileBoard : TileMap {
         return _realBoard.CanPlace(_pieceCur);
     }
 
+    private void HoldPiece() {
+        _pieceCur = HeldPiece.Swap(_pieceCur);
+        if (_pieceCur == null) GenerateNewPiece();
+    }
+
     private void RotatePiece() {
         var r = _pieceCur.Clone().Rotate();
         if (_realBoard.CanPlace(r)) _pieceCur = r;
@@ -80,22 +85,6 @@ public partial class TileBoard : TileMap {
         _spawn = new Vector2I(BoardSize.X / 2, 0);
         _realBoard = new PieceBoard(BoardSize);
         GenerateNewPiece();
-
-        // Enable required layers
-        Clear();
-        for (var layer = 0; layer < 3; layer++) SetLayerEnabled(layer, true);
-
-        // Create walls
-        for (var y = 0; y < BoardSize.Y; y++) {
-            SetCell(0, new Vector2I(-1, y), 0, BlackBlockAtlasCoord);
-            SetCell(0, new Vector2I(BoardSize.X, y), 0, BlackBlockAtlasCoord);
-        }
-
-        // Create floor
-        for (var x = -1; x < BoardSize.X + 1; x++) SetCell(0, new Vector2I(x, BoardSize.Y), 0, BlackBlockAtlasCoord);
-
-        // Offset by one cell to start board in (0, 0), then move center point to (0, 0)
-        Position += new Vector2I(CellQuadrantSize, 0) - CanvasSize / 2;
     }
 
     private void Tick(double delta) {
@@ -125,6 +114,7 @@ public partial class TileBoard : TileMap {
     }
 
     private void ProcessInput() {
+        if (Input.IsActionJustPressed("hold_piece")) HoldPiece();
         if (Input.IsActionJustPressed("ui_up")) RotatePiece();
         if (Input.IsActionJustPressed("ui_right")) MovePiece(Vector2I.Right);
         if (Input.IsActionJustPressed("ui_left")) MovePiece(Vector2I.Left);
