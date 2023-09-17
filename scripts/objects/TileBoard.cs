@@ -3,49 +3,67 @@ using Godot;
 
 namespace Tetris.scripts.objects;
 
-[GlobalClass]
 public partial class TileBoard : TileMap {
-    private static readonly Vector2I PIECE_WHITE = Vector2I.Zero;
-    private static readonly Vector2I PIECE_BLACK = Vector2I.Right;
-    private static readonly double TICK_RATE = 0.25f;
-    private int FLOOR_TICKS;
-    private Piece PIECE_CUR;
-    private Vector2I PIECE_POS = Vector2I.Zero;
-    private PieceBoard REAL_BOARD;
+    // Black piece used in the background layer
+    private static readonly Vector2I PieceBlack = Vector2I.Right;
 
-    private int SCORE;
-    private Vector2I SPAWN = Vector2I.Zero;
-    private int SQUARE_UNIT;
-    private double TICK_STEP;
+    // Current piece being moved
+    private Piece _pieceCur;
 
-    private int X_SIZE;
-    private int Y_SIZE;
+    // Underlying game board
+    private PieceBoard _realBoard;
 
+    // Current score
+    private int _score;
+
+    // Piece spawn locatiom
+    private Vector2I _spawn = Vector2I.Zero;
+
+    // Cell size
+    private int _squareUnit;
+
+    // How far along a tick game is currently
+    private double _tickStep;
+
+    // How many ticks touching the floor before the piece is placed
+    [Export(PropertyHint.Range, "0,10,1,or_greater")]
+    public int FloorTicks = 3;
+
+    // Points given for a single line cleared
+    [Export(PropertyHint.Range, "5,100,5,or_greater")]
+    public int ScoreMultiplier = 25;
+
+    // Size of the board
+    [Export]
+    public Vector2I Size = new(10, 20);
+
+    // Amount of seconds for a single game tick
+    [Export(PropertyHint.Range, "0,1,0.05,or_greater")]
+    public double TickRate = 0.25f;
 
     private bool GenerateNewPiece() {
         var dice = GD.RandRange(0, TileSet.GetPatternsCount() - 1);
         var patte = TileSet.GetPattern(dice);
 
-        PIECE_CUR = new Piece(patte);
-        PIECE_POS = SPAWN;
-        return REAL_BOARD.CanPlace(PIECE_POS, PIECE_CUR);
+        _pieceCur = new Piece(patte, _spawn);
+        return _realBoard.CanPlace(_pieceCur);
     }
 
     private void RotatePiece() {
-        var r = PIECE_CUR.Rotate();
-        if (REAL_BOARD.CanPlace(PIECE_POS, r)) PIECE_CUR = r;
+        var r = _pieceCur.Rotate();
+        if (_realBoard.CanPlace(r)) _pieceCur = r;
     }
 
     private bool MovePiece(Vector2I mov) {
-        if (!REAL_BOARD.CanPlace(PIECE_POS + mov, PIECE_CUR)) return false;
-        PIECE_POS += mov;
+        if (!_realBoard.CanPlace(_pieceCur + mov)) return false;
+        _pieceCur.Offset(mov);
         return true;
     }
 
     private void BreakBlocks() {
-        var broken = REAL_BOARD.BreakLines();
-        SCORE += 25 * broken * broken;
-        GD.Print(SCORE);
+        var broken = _realBoard.BreakLines();
+        _score += ScoreMultiplier * broken * broken;
+        GD.Print(_score);
     }
 
     private void GameOver() {
@@ -54,42 +72,40 @@ public partial class TileBoard : TileMap {
         SetProcess(false);
     }
 
-    private void CreateBoard(Vector2I size) {
-        X_SIZE = size.X;
-        Y_SIZE = size.Y;
-        SPAWN = new Vector2I(X_SIZE / 2, 0);
-        REAL_BOARD = new PieceBoard(size);
+    private void CreateBoard() {
+        _spawn = new Vector2I(Size.X / 2, 0);
+        _realBoard = new PieceBoard(Size);
         GenerateNewPiece();
 
-        for (var y = 0; y < Y_SIZE; y++) {
-            SetCell(2, new Vector2I(-1, y), 0, PIECE_BLACK);
-            SetCell(2, new Vector2I(X_SIZE, y), 0, PIECE_BLACK);
+        for (var y = 0; y < Size.Y; y++) {
+            SetCell(2, new Vector2I(-1, y), 0, PieceBlack);
+            SetCell(2, new Vector2I(Size.X, y), 0, PieceBlack);
         }
 
-        for (var x = -1; x < X_SIZE + 1; x++) SetCell(2, new Vector2I(x, Y_SIZE), 0, PIECE_BLACK);
+        for (var x = -1; x < Size.X + 1; x++) SetCell(2, new Vector2I(x, Size.Y), 0, PieceBlack);
     }
 
     private void Tick(double delta) {
-        TICK_STEP += delta;
-        if (TICK_STEP < TICK_RATE) return;
-        TICK_STEP -= TICK_RATE;
+        _tickStep += delta;
+        if (_tickStep < TickRate) return;
+        _tickStep -= TickRate;
 
-        if (MovePiece(Vector2I.Down) || FLOOR_TICKS++ < 3) return;
-        FLOOR_TICKS = 0;
+        if (MovePiece(Vector2I.Down) || FloorTicks++ < 3) return;
+        FloorTicks = 0;
 
-        REAL_BOARD.Place(PIECE_POS, PIECE_CUR);
+        _realBoard.Place(_pieceCur);
         BreakBlocks();
         if (!GenerateNewPiece()) GameOver();
     }
 
     private void Render() {
         ClearLayer(1);
-        foreach (var cell in PIECE_CUR.Cells) SetCell(1, cell + PIECE_POS, 0, PIECE_CUR.Value);
+        foreach (var cell in _pieceCur.Cells) SetCell(1, cell + _pieceCur.Position, 0, _pieceCur.Value);
 
         ClearLayer(0);
-        for (var y = 0; y < REAL_BOARD.height; y++)
-        for (var x = 0; x < REAL_BOARD.width; x++) {
-            var cell = REAL_BOARD.board[y][x];
+        for (var y = 0; y < _realBoard.Height; y++)
+        for (var x = 0; x < _realBoard.Width; x++) {
+            var cell = _realBoard.Board[y][x];
             if (PieceBoard.IsEmptyCell(cell)) continue;
             SetCell(0, new Vector2I(x, y), 0, cell);
         }
@@ -99,19 +115,19 @@ public partial class TileBoard : TileMap {
         if (Input.IsActionJustPressed("ui_up")) RotatePiece();
         if (Input.IsActionJustPressed("ui_right")) MovePiece(Vector2I.Right);
         if (Input.IsActionJustPressed("ui_left")) MovePiece(Vector2I.Left);
-        if (Input.IsActionPressed("ui_down")) Tick(Math.Max(TICK_RATE - TICK_STEP, 0));
+        if (Input.IsActionPressed("ui_down")) Tick(Math.Max(TickRate - _tickStep, 0));
     }
 
     public override void _Ready() {
-        SQUARE_UNIT = CellQuadrantSize;
-        CreateBoard(new Vector2I(10, 20));
+        _squareUnit = CellQuadrantSize;
+        CreateBoard();
         Render();
     }
 
     public override void _Process(double delta) {
         var window = GetViewportRect().Size;
-        window.X = (window.X - X_SIZE * SQUARE_UNIT * Scale.X) / 2;
-        window.Y -= (Y_SIZE + 1) * SQUARE_UNIT * Scale.Y;
+        window.X = (window.X - Size.X * _squareUnit * Scale.X) / 2;
+        window.Y -= (Size.Y + 1) * _squareUnit * Scale.Y;
         Position = window;
         ProcessInput();
         Tick(delta);

@@ -8,23 +8,25 @@ namespace Tetris.scripts.objects;
 
 public partial class PieceBoard : RefCounted {
     // TODO CREATE/USE AN ACTUAL MATRIX TYPE
-    public Array<Array<Vector2I>> board;
-    public int height;
-    public int width;
+    public Array<Array<Vector2I>> Board;
+
+    // TODO USE SIZE VECTOR
+    public int Height;
+    public int Width;
 
     public PieceBoard(Vector2I size) {
-        width = size.X;
-        height = size.Y;
-        board = new Array<Array<Vector2I>>();
-        for (var y = 0; y < height; y++) {
+        Width = size.X;
+        Height = size.Y;
+        Board = new Array<Array<Vector2I>>();
+        for (var y = 0; y < Height; y++) {
             var line = new Array<Vector2I>();
-            for (var x = 0; x < width; x++) line.Add(Vector2I.Zero);
-            board.Add(line);
+            for (var x = 0; x < Width; x++) line.Add(Vector2I.Zero);
+            Board.Add(line);
         }
     }
 
     public override string ToString() {
-        return board.Aggregate(
+        return Board.Aggregate(
             "",
             (res, line) => line.Aggregate(
                 res,
@@ -47,31 +49,31 @@ public partial class PieceBoard : RefCounted {
 
     private bool CanPlaceCell(Vector2I pos) {
         try {
-            return IsEmptyCell(board[pos.Y][pos.X]);
+            return IsEmptyCell(Board[pos.Y][pos.X]);
         }
         catch (Exception) {
             return false;
         }
     }
 
-    public bool CanPlace(Vector2I pos, Piece piece) {
-        return piece.Cells.All(cell => CanPlaceCell(cell + pos));
+    public bool CanPlace(Piece piece) {
+        return piece.Cells.All(cell => CanPlaceCell(cell + piece.Position));
     }
 
-    public bool Place(Vector2I pos, Piece piece) {
-        if (!CanPlace(pos, piece)) return false;
+    public bool Place(Piece piece) {
+        if (!CanPlace(piece)) return false;
         foreach (var cell in piece.Cells) {
-            var p = cell + pos;
-            board[p.Y][p.X] = piece.Value;
+            var p = cell + piece.Position;
+            Board[p.Y][p.X] = piece.Value;
         }
 
         return true;
     }
 
     private void MoveLineDown(int lineIndex, int amount) {
-        for (var x = 0; x < width; x++) {
-            board[lineIndex + amount][x] = board[lineIndex][x];
-            board[lineIndex][x] = Vector2I.Zero;
+        for (var x = 0; x < Width; x++) {
+            Board[lineIndex + amount][x] = Board[lineIndex][x];
+            Board[lineIndex][x] = Vector2I.Zero;
         }
     }
 
@@ -81,8 +83,8 @@ public partial class PieceBoard : RefCounted {
 
     private void ShiftDown() {
         var emptyLines = 0;
-        for (var y = height - 1; y >= 0; y--) {
-            if (IsLineEmpty(board[y])) {
+        for (var y = Height - 1; y >= 0; y--) {
+            if (IsLineEmpty(Board[y])) {
                 emptyLines++;
                 continue;
             }
@@ -96,12 +98,12 @@ public partial class PieceBoard : RefCounted {
 
     private bool BreakLine(Array<Vector2I> line) {
         if (!IsLineBreakable(line)) return false;
-        for (var i = 0; i < width; i++) line[i] = Vector2I.Zero;
+        for (var i = 0; i < Width; i++) line[i] = Vector2I.Zero;
         return true;
     }
 
     public int BreakLines() {
-        var res = board.Count(BreakLine);
+        var res = Board.Count(BreakLine);
         if (res > 0) ShiftDown();
         return res;
     }
