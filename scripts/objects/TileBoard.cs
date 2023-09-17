@@ -50,7 +50,7 @@ public partial class TileBoard : TileMap {
     }
 
     private void RotatePiece() {
-        var r = _pieceCur.Rotate();
+        var r = _pieceCur.Duplicate().Rotate();
         if (_realBoard.CanPlace(r)) _pieceCur = r;
     }
 
