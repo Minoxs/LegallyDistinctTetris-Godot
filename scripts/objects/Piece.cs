@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
 
@@ -6,6 +7,9 @@ namespace Tetris.scripts.objects;
 // TODO CONVERT PIECE TO RECORD PROBABLY
 // TODO USE C# ARRAY WHEREVER POSSIBLE
 public partial class Piece : RefCounted {
+    private Array<Vector2I> Cells;
+    private Vector2I Position;
+
     public Piece(Vector2I value, Array<Vector2I> cells, Vector2I position) {
         Value = value;
         Cells = cells.Duplicate();
@@ -19,8 +23,15 @@ public partial class Piece : RefCounted {
     }
 
     public Vector2I Value { get; }
-    public Array<Vector2I> Cells { get; }
-    public Vector2I Position { get; private set; }
+
+    public IEnumerable<Vector2I> CellsPosition {
+        get {
+            var cells = Cells.Duplicate();
+            for (var i = 0; i < cells.Count; i++) cells[i] += Position;
+
+            return cells;
+        }
+    }
 
     private Piece Duplicate() {
         return new Piece(Value, Cells, Position);

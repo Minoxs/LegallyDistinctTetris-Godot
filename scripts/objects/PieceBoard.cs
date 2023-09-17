@@ -57,16 +57,12 @@ public partial class PieceBoard : RefCounted {
     }
 
     public bool CanPlace(Piece piece) {
-        return piece.Cells.All(cell => CanPlaceCell(cell + piece.Position));
+        return piece.CellsPosition.All(CanPlaceCell);
     }
 
     public bool Place(Piece piece) {
         if (!CanPlace(piece)) return false;
-        foreach (var cell in piece.Cells) {
-            var p = cell + piece.Position;
-            Board[p.Y][p.X] = piece.Value;
-        }
-
+        foreach (var cell in piece.CellsPosition) Board[cell.Y][cell.X] = piece.Value;
         return true;
     }
 

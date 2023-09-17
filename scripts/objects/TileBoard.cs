@@ -100,7 +100,7 @@ public partial class TileBoard : TileMap {
 
     private void Render() {
         ClearLayer(1);
-        foreach (var cell in _pieceCur.Cells) SetCell(1, cell + _pieceCur.Position, 0, _pieceCur.Value);
+        foreach (var cell in _pieceCur.CellsPosition) SetCell(1, cell, 0, _pieceCur.Value);
 
         ClearLayer(0);
         for (var y = 0; y < _realBoard.Height; y++)
